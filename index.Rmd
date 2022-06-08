@@ -34,7 +34,7 @@ felinos <-
 
 
 # Tabla 
-```{r}
+```{r Tabla, echo=FALSE}
 # Visualización de datos de felinos en formato tabular
 felinos %>%
   select(species,eventDate, stateProvince, locality, decimalLongitude, decimalLatitude) %>%
@@ -50,6 +50,40 @@ felinos %>%
 #Graficos 
 
 ```{r}
+ggplot2_barras_conteo <-
+  felinos %>%
+  ggplot(aes(x = cut)) +
+  geom_bar() +
+  ggtitle("Cantidad de felinos en Costa Rica") +
+  xlab("Especie") +
+  ylab("Cantidad") +
+  theme_minimal()
+
+ggplotly(ggplot2_barras_conteo) %>% config(locale = 'es')
+```
+
+# Mapa
+```{r}
+leaflet() %>%
+  addTiles() %>%
+  addRasterImage( 
+    altitud, 
+    opacity = 0.6
+  ) %>%    
+  addPolygons(
+    data = provincias,
+    color = "black",
+    fillColor = "transparent",
+    stroke = TRUE,
+    weight = 1.0,
+  ) %>%
+  addCircleMarkers(
+    data = felinos,
+    stroke = F,
+    radius = 4,
+    fillColor = 'blue',
+    fillOpacity = 1
+  )
 
 ```
 
