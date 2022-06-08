@@ -17,6 +17,7 @@ library(plotly)
 library(sf)
 library(leaflet)
 library(DT)
+library(raster)
 ```
 
 ```{r}
@@ -49,41 +50,25 @@ felinos %>%
 
 #Graficos 
 
-```{r}
-ggplot2_barras_conteo <-
+```{r grafico}
+graficos_barras <-
   felinos %>%
-  ggplot(aes(x = cut)) +
-  geom_bar() +
-  ggtitle("Cantidad de felinos en Costa Rica") +
-  xlab("Especie") +
-  ylab("Cantidad") +
-  theme_minimal()
+  ggplot(aes(x = species)) +
+  geom_bar() 
+ggplotly(graficos_barras)
 
-ggplotly(ggplot2_barras_conteo) %>% config(locale = 'es')
 ```
 
 # Mapa
-```{r}
+```{r mapa, massage=FALSE}
 leaflet() %>%
-  addTiles() %>%
-  addRasterImage( 
-    altitud, 
-    opacity = 0.6
-  ) %>%    
-  addPolygons(
-    data = provincias,
-    color = "black",
-    fillColor = "transparent",
-    stroke = TRUE,
-    weight = 1.0,
-  ) %>%
-  addCircleMarkers(
+  addTiles() %>% 
+  addCircleMarkers( 
     data = felinos,
     stroke = F,
     radius = 4,
     fillColor = 'blue',
     fillOpacity = 1
   )
-
 ```
 
