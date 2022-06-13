@@ -1,26 +1,37 @@
 ---
-title: "Datos de Felinos de Costa Rica"
-author: "Daniela Castro"
+title: "Datos de felinos de Costa Rica"
+author: "Daniela Castro Rivera"
 date: '2022-06-08'
-output: html_document
+output:
+html_document:
+code_folding: hide
+theme: readable
+toc: true
+toc_depth: 5
+toc_float:
+collapsed: false
+smooth_scroll: false
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Preparativos 
+# Carga de paquetes de R 
 
-```{r carga-paquetes}
+```{r carga-paquetes, message=FALSE}
+# Carga de paquetes de R 
 library(dplyr)
-library(ggplot2)
-library(plotly)
-library(sf)
-library(leaflet)
-library(DT)
-library(raster)
+library(ggplot2) 
+library(plotly) 
+library(DT) 
+library(sf) 
+library(terra) 
+library(raster) 
+library(leaflet) 
 ```
 
-```{r}
+```{r, include=FALSE}
 felinos <-
   st_read(
     "C:/Users/gf0604-1/Practica Git/felinos.csv",
@@ -32,24 +43,43 @@ felinos <-
   )
 ```
 
+# Visualizaciones de datos
+## Tablas
+### Registros de presencia
 
-
-# Tabla 
-```{r Tabla, echo=FALSE}
+```{r Tabla, }
 # Visualización de datos de felinos en formato tabular
 felinos %>%
-  select(species,eventDate, stateProvince, locality, decimalLongitude, decimalLatitude) %>%
-  st_drop_geometry() %>%
-  datatable(colnames = c("Especie", "Fecha", "Localidad", "Longitud", "Latitud"),
+  st_drop_geometry() %>% # se suprime la columna de geometría
+  dplyr::select(species,
+                # selección de columnas
+                eventDate,
+                stateProvince,
+                locality,
+                decimalLongitude,
+                decimalLatitude) %>%
+  datatable(
     options = list(
-    pageLength = 5,
-    language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
-  ))
+      pageLength = 5,
+      # cantidad de registros en una página
+      language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json') # traducción al español
+    ),
+    colnames = c(
+      # encabezados de las columnas
+      "Especie",
+      "Fecha",
+      "Provincia",
+      "Localidad",
+      "Longitud",
+      "Latitud"
+    )
+  )
 ```
 
 
 #Graficos 
 
+## Registros de presencia por especie
 ```{r grafico}
 graficos_barras <-
   felinos %>%
@@ -60,6 +90,8 @@ ggplotly(graficos_barras)
 ```
 
 # Mapa
+
+## Registros de presencia
 ```{r mapa, massage=FALSE}
 leaflet() %>%
   addTiles() %>% 
